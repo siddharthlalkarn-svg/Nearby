@@ -1,0 +1,120 @@
+:root {
+  /* Colors */
+  --color-primary: #FF78AC; /* Electric Rose */
+  --color-secondary: #A8D5E3; /* Coastal Teal */
+  --color-tertiary: #FCD34D; /* Sun Gold */
+  --color-accent: #D1E7DD; /* Soft Sage */
+  
+  --color-base: #F2F0EA; /* Warm Cream */
+  --color-surface: #FAFAF7; /* Light Milk */
+  --color-surface-inset: #E5E2D9; /* Muted Stone */
+  
+  --color-text: #1E1E24; /* Deep Charcoal */
+  --color-text-light: #5A5A64; /* Soft Graphite */
+  
+  --color-white: #FFFFFF;
+  
+  /* Typography */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  --radius-sticker: 6px;
+
+  /* Shadows (from design.md) */
+  --shadow-level-1: 0 4px 16px -2px rgba(30, 30, 36, 0.04), 0 1px 3px 0 rgba(30, 30, 36, 0.02);
+  --shadow-level-2: 0 8px 24px -4px rgba(30, 30, 36, 0.08), 0 2px 6px -1px rgba(30, 30, 36, 0.03);
+  --shadow-level-3: 0 20px 40px -8px rgba(30, 30, 36, 0.14);
+  --shadow-sticker: 1px 2px 0px rgba(30, 30, 36, 0.12);
+  
+  /* Specific interaction shadow for primary buttons */
+  --shadow-primary-hover: 0 6px 20px rgba(255, 120, 172, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-base);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Typography Classes */
+.headline-lg {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 44px;
+}
+@media (max-width: 768px) {
+  .headline-lg {
+    font-size: 28px;
+    line-height: 34px;
+    letter-spacing: -0.015em;
+  }
+}
+
+.headline-md {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 30px;
+}
+
+.label-sticker {
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+}
+
+#app {
+  max-width: 1240px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--color-base);
+  overflow-x: hidden;
+}
+
+/* Animations */
+@keyframes bounceIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
