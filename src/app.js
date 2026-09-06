@@ -44,10 +44,18 @@ function showOnboarding() {
   // Attach global callback for the provider link (kept for legacy if used in views)
   window.onGoToProvider = () => showProviderDashboard();
 
-  renderOnboarding(appContainer, (constraints) => {
-    globalConstraints = constraints;
-    showFeed(constraints);
-  });
+  renderOnboarding(
+    appContainer, 
+    // onComplete (recommendation flow)
+    (constraints) => {
+      globalConstraints = constraints;
+      showFeed(constraints);
+    },
+    // onSelectExperience (direct map exploration)
+    (experience) => {
+      showDetail(experience);
+    }
+  );
 }
 
 function showFeed(constraints) {

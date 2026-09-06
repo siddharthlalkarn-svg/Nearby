@@ -29,6 +29,12 @@ export function renderExperienceDetail(container, experience, onBack) {
        </div>`
     : '';
 
+  const hasLocation = experience.location && typeof experience.location.lat === 'number' && typeof experience.location.lng === 'number';
+  
+  const locationHtml = hasLocation
+    ? `<div id="detailMap" style="width: 100%; height: 160px; border-radius: var(--radius-md); position: relative; z-index: 1;"></div>`
+    : `<div style="width: 100%; height: 160px; background: #e0e0e0; border-radius: var(--radius-md); display:flex; align-items:center; justify-content:center; color: var(--color-text-light); font-weight: 600;">[ Map Render Mock ]</div>`;
+
   container.innerHTML = `
     <div class="detail-screen">
       <div class="detail-hero">
@@ -75,9 +81,8 @@ export function renderExperienceDetail(container, experience, onBack) {
 
           <div class="detail-section">
             <h4>Location</h4>
-            <div style="width: 100%; height: 160px; background: #e0e0e0; border-radius: var(--radius-md); display:flex; align-items:center; justify-content:center; color: var(--color-text-light); font-weight: 600;">
-              [ Map Render Mock ]
-            </div>
+            <p style="font-size: 14px; margin-bottom: 8px; color: var(--color-text-light); font-weight: 600;">${experience.location?.name || ''}</p>
+            ${locationHtml}
           </div>
 
           <div class="detail-section">
@@ -153,4 +158,48 @@ export function renderExperienceDetail(container, experience, onBack) {
       alert(`Requested slot at ${selectedSlot} for ${experience.name}! (MVP Demo)`);
     }
   });
+
+  // Render Map
+  if (hasLocation) {
+    setTimeout(() => {
+      if (!window.L) return;
+      const mapEl = document.getElementById('detailMap');
+      if (!mapEl) return;
+      
+      const map = L.map(mapEl, {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([experience.location.lat, experience.location.lng], 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+      const markerHtml = `
+        <div class="custom-marker" style="
+          background: var(--color-primary); 
+          color: white; 
+          border-radius: 50%; 
+          width: 32px; 
+          height: 32px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          border: 2px solid white; 
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          font-weight: bold;
+          font-size: 14px;
+        ">
+          ${experience.category.charAt(0)}
+        </div>
+      `;
+
+      const icon = L.divIcon({
+        className: 'custom-icon-wrapper',
+        html: markerHtml,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      L.marker([experience.location.lat, experience.location.lng], { icon }).addTo(map);
+    }, 100);
+  }
 }

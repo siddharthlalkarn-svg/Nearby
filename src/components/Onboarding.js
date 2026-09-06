@@ -1,4 +1,6 @@
-export function renderOnboarding(container, onComplete) {
+import { mockExperiences } from '../data/mockExperiences.js';
+
+export function renderOnboarding(container, onComplete, onSelectExperience) {
   // State
   let state = {
     interests: [],
@@ -38,15 +40,25 @@ export function renderOnboarding(container, onComplete) {
 
   container.innerHTML = `
     <div class="onboarding-layout">
-      <!-- Left Column: Hero/Editorial -->
-      <div class="onboarding-hero">
-        <div class="hero-graphic">
-          <div class="sticker-accent" style="top: 10%; right: 10%;">Mumbai</div>
-          <div class="sticker-accent" style="bottom: 20%; left: 5%; transform: rotate(-5deg); background: var(--color-tertiary);">Right Now</div>
+      <!-- Left Column: Interactive Map (Desktop) / Top Map (Mobile) -->
+      <div class="onboarding-hero" style="position: relative;">
+        <div id="homeMap" class="hero-graphic" style="background: var(--color-base); z-index: 1;">
+          <!-- Map will render here -->
         </div>
+        
+        <!-- Experience Preview Card (Hidden by default) -->
+        <div id="homeMapPreview" style="display: none; position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 340px; background: var(--color-surface); border-radius: var(--radius-lg); padding: 12px; box-shadow: var(--shadow-level-2); z-index: 1000; flex-direction: row; gap: 12px; align-items: center;">
+          <img id="previewImg" src="" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+          <div style="flex: 1;">
+            <h4 id="previewTitle" style="font-size: 14px; font-weight: 700; margin-bottom: 4px;"></h4>
+            <p id="previewMeta" style="font-size: 12px; color: var(--color-text-light);"></p>
+          </div>
+          <button id="previewBtn" class="btn btn-primary" style="padding: 8px 12px; font-size: 12px;">View</button>
+        </div>
+
         <div class="onboarding-header" style="margin-top: 24px;">
           <h1 class="headline-lg">Spontaneous.<br>Curated.<br>Local.</h1>
-          <p style="margin-top: 16px; font-size: 16px;">Tell us what you need, and we'll instantly match you with hand-picked experiences nearby.</p>
+          <p style="margin-top: 16px; font-size: 16px;">Explore the map directly, or tell us what you need for a personalized match.</p>
         </div>
       </div>
 
@@ -202,4 +214,84 @@ export function renderOnboarding(container, onComplete) {
       onComplete(state);
     }
   });
+
+  // Initialize Map
+  setTimeout(() => {
+    initHomeMap();
+  }, 100);
+
+  function initHomeMap() {
+    if (!window.L) return; // Ensure Leaflet is loaded
+    const mapEl = document.getElementById('homeMap');
+    if (!mapEl) return;
+
+    // Center on Mumbai region
+    const map = L.map(mapEl, {
+      zoomControl: false,
+      attributionControl: false
+    }).setView([19.0760, 72.8777], 11);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    const previewCard = document.getElementById('homeMapPreview');
+    let selectedExp = null;
+
+    // Add markers for all mockExperiences
+    mockExperiences.forEach(exp => {
+      if (!exp.location || !exp.location.lat || !exp.location.lng) return;
+
+      const markerHtml = `
+        <div class="custom-marker" style="
+          background: var(--color-primary); 
+          color: white; 
+          border-radius: 50%; 
+          width: 32px; 
+          height: 32px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          border: 2px solid white; 
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          font-weight: bold;
+          font-size: 14px;
+        ">
+          ${exp.category.charAt(0)}
+        </div>
+      `;
+
+      const icon = L.divIcon({
+        className: 'custom-icon-wrapper',
+        html: markerHtml,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      const marker = L.marker([exp.location.lat, exp.location.lng], { icon }).addTo(map);
+
+      marker.on('click', () => {
+        // Show Preview
+        selectedExp = exp;
+        document.getElementById('previewImg').src = exp.image;
+        document.getElementById('previewTitle').textContent = exp.name;
+        document.getElementById('previewMeta').textContent = `₹${exp.price} • ${exp.durationMinutes}m`;
+        
+        previewCard.style.display = 'flex';
+        
+        // Pan to pin
+        map.flyTo([exp.location.lat, exp.location.lng], 13, { duration: 0.5 });
+      });
+    });
+
+    // Close preview if clicking map background
+    map.on('click', () => {
+      previewCard.style.display = 'none';
+      selectedExp = null;
+    });
+
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      if (selectedExp && onSelectExperience) {
+        onSelectExperience(selectedExp);
+      }
+    });
+  }
 }
