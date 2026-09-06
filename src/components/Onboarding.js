@@ -37,65 +37,74 @@ export function renderOnboarding(container, onComplete) {
   }
 
   container.innerHTML = `
-    <div class="onboarding-screen">
-      <div class="onboarding-header">
-        <h1>What's your mood?</h1>
-        <p>Tell us what you need right now, and we'll find the perfect match.</p>
-      </div>
-
-      <div class="chat-input-wrapper">
-        <input type="text" id="chatInput" class="chat-input" placeholder="E.g. I want food under ₹1000..." autocomplete="off">
-        <button id="chatSubmit" class="chat-submit" aria-label="Search">
-          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-        </button>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 24px; color: var(--color-text-light); font-size: 14px;">— OR —</div>
-
-      <div class="form-group">
-        <label class="form-label">Interests (Select 1 or more)</label>
-        <div class="chip-group" id="interestsGroup">
-          ${interestsOptions.map(interest => `
-            <div class="chip interest-chip" data-val="${interest}">${interest}</div>
-          `).join('')}
+    <div class="onboarding-layout">
+      <!-- Left Column: Hero/Editorial -->
+      <div class="onboarding-hero">
+        <div class="hero-graphic">
+          <div class="sticker-accent" style="top: 10%; right: 10%;">Mumbai</div>
+          <div class="sticker-accent" style="bottom: 20%; left: 5%; transform: rotate(-5deg); background: var(--color-tertiary);">Right Now</div>
+        </div>
+        <div class="onboarding-header" style="margin-top: 24px;">
+          <h1 class="headline-lg">Spontaneous.<br>Curated.<br>Local.</h1>
+          <p style="margin-top: 16px; font-size: 16px;">Tell us what you need, and we'll instantly match you with hand-picked experiences nearby.</p>
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Budget: <span class="slider-value" id="budgetVal">₹${state.budget}</span></label>
-        <div class="slider-container">
-          <input type="range" id="budgetSlider" min="0" max="5000" step="100" value="${state.budget}">
+      <!-- Right Column: Form -->
+      <div class="onboarding-form-container">
+        <div class="chat-input-wrapper">
+          <input type="text" id="chatInput" class="chat-input" placeholder="E.g. I want food under ₹1000..." autocomplete="off">
+          <button id="chatSubmit" class="chat-submit" aria-label="Search">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+          </button>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Time Available</label>
-        <div class="chip-group" id="timeGroup">
-          ${timeOptions.map(t => `
-            <div class="chip time-chip ${t.value === state.availableMinutes ? 'active teal-active' : ''}" data-val="${t.value}">
-              ${t.label}
-            </div>
-          `).join('')}
+        <div style="text-align: center; margin-bottom: 32px; color: var(--color-text-light); font-size: 14px; font-weight: 700; letter-spacing: 1px;">OR BUILD IT</div>
+
+        <div class="form-group">
+          <label class="form-label">Interests (Select 1 or more)</label>
+          <div class="chip-group" id="interestsGroup">
+            ${interestsOptions.map(interest => `
+              <div class="chip interest-chip" data-val="${interest}">${interest}</div>
+            `).join('')}
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Who's going?</label>
-        <div class="chip-group" id="groupTypeGroup">
-          ${groupOptions.map(g => `
-            <div class="chip group-chip ${g.value === state.groupType ? 'active teal-active' : ''}" data-val="${g.value}">
-              ${g.label}
-            </div>
-          `).join('')}
+        <div class="form-group">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            Budget 
+            <span class="slider-value" id="budgetVal">₹${state.budget}</span>
+          </label>
+          <div class="slider-container">
+            <input type="range" id="budgetSlider" min="0" max="5000" step="100" value="${state.budget}">
+          </div>
         </div>
-      </div>
 
-      <div class="form-group" style="margin-top: 32px;">
-        <button id="submitBtn" class="btn btn-primary" disabled>Find my match</button>
-      </div>
+        <div class="form-group">
+          <label class="form-label">Time Available</label>
+          <div class="chip-group" id="timeGroup">
+            ${timeOptions.map(t => `
+              <div class="chip time-chip ${t.value === state.availableMinutes ? 'active teal-active' : ''}" data-val="${t.value}">
+                ${t.label}
+              </div>
+            `).join('')}
+          </div>
+        </div>
 
-      <div class="provider-link">
-        Are you a provider? <a href="#" id="providerLink">List an experience</a>
+        <div class="form-group">
+          <label class="form-label">Who's going?</label>
+          <div class="chip-group" id="groupTypeGroup">
+            ${groupOptions.map(g => `
+              <div class="chip group-chip ${g.value === state.groupType ? 'active teal-active' : ''}" data-val="${g.value}">
+                ${g.label}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 40px;">
+          <button id="submitBtn" class="btn btn-primary" disabled>Find my match</button>
+        </div>
       </div>
     </div>
   `;

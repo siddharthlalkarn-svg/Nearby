@@ -13,9 +13,58 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   </head>
   <body>
-    <div id="app">
+    <header class="global-header">
+      <div class="header-content">
+        <div class="brand-logo" id="navHome">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>Nearby</span>
+        </div>
+        <div class="header-location">
+          <span class="location-dot"></span>
+          Mumbai, MH
+        </div>
+        <nav class="desktop-nav">
+          <button class="nav-link active" id="navExplore">Explore</button>
+          <button class="nav-link" id="navSaved">Saved</button>
+          <button class="nav-link" id="navProvider">Host Hub</button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="app" class="global-main">
       <!-- Content dynamically injected here -->
-    </div>
+    </main>
+
+    <footer class="global-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h4>Nearby</h4>
+          <p>Curated hyper-local experiences for the spontaneous traveler.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#" id="footerProviderLink">Become a Host</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-nav">
+      <button class="mobile-nav-item active" id="mobNavExplore">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <span>Explore</span>
+      </button>
+      <button class="mobile-nav-item" id="mobNavSaved">
+        <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+        <span>Saved</span>
+      </button>
+      <button class="mobile-nav-item" id="mobNavProvider">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span>Host</span>
+      </button>
+    </nav>
     <script type="module" src="/src/app.js"></script>
   </body>
 </html>

@@ -26,11 +26,11 @@ export function renderRecommendationFeed(container, constraints, onReplan, onSel
             <div class="card-content">
               <div class="card-meta">
                 <span>${exp.category}</span>
-                <span>⭐ ${exp.rating}</span>
+                <span style="color:var(--color-primary); font-weight:700;">⭐ ${exp.rating}</span>
               </div>
               <h3 class="card-title">${exp.name}</h3>
               <div class="card-meta" style="margin-bottom: 0;">
-                <span>₹${exp.price}</span>
+                <span style="font-weight:700; color:var(--color-text);">₹${exp.price}</span>
                 <span>${exp.durationMinutes} min</span>
               </div>
               <ul class="reason-list">
@@ -49,11 +49,31 @@ export function renderRecommendationFeed(container, constraints, onReplan, onSel
     `;
 
     const mapHtml = `
-      <div id="mapView" class="map-container" style="display: none;"></div>
-      <div id="bottomSheet" class="bottom-sheet">
+      <div class="split-pane-layout">
+        <div class="split-pane-list desktop-only">
+          <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 16px;">Nearby Experiences</h2>
+          ${feedHtml}
+        </div>
+        <div class="split-pane-map">
+          <div id="mapView" class="map-container"></div>
+        </div>
+      </div>
+      <div id="bottomSheet" class="bottom-sheet mobile-only">
         <!-- Preview injected here -->
       </div>
     `;
+
+    // Contextual Banner
+    const heroBannerHtml = viewMode === 'list' ? `
+      <div class="context-banner">
+        <div class="context-content">
+          <h1 class="headline-lg">Your Mumbai Curations</h1>
+          <p style="color: var(--color-text-light); font-size: 16px; margin-top: 8px; max-width: 500px;">
+            We've found ${recommendations.length} handpicked experiences matching your mood, budget, and time constraints right now.
+          </p>
+        </div>
+      </div>
+    ` : '';
 
     // Filter Bar HTML with toggle
     const filterHtml = `
@@ -70,8 +90,9 @@ export function renderRecommendationFeed(container, constraints, onReplan, onSel
     `;
 
     container.innerHTML = `
-      <div class="feed-screen">
+      <div class="feed-screen ${viewMode === 'map' ? 'feed-screen-map' : ''}">
         ${filterHtml}
+        ${heroBannerHtml}
         <div id="feedContent">
           ${viewMode === 'list' ? feedHtml : mapHtml}
         </div>
@@ -139,18 +160,30 @@ export function renderRecommendationFeed(container, constraints, onReplan, onSel
       });
     });
 
-    // Card clicks
-    if (viewMode === 'list') {
-      container.querySelectorAll('.exp-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const id = card.dataset.id;
-          const exp = recommendations.find(r => r.id === id);
+    // Card clicks (now attaches in both list and split-pane map views)
+    container.querySelectorAll('.exp-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        const exp = recommendations.find(r => r.id === id);
+        
+        // If in map mode on desktop, we might want to highlight pin instead, but for MVP let's just go to detail
+        // Wait, reference says "Selecting an experience in the list should highlight/focus the corresponding map marker."
+        if (viewMode === 'map' && window.innerWidth >= 1024) {
+          document.querySelectorAll('.rich-map-pin').forEach(el => el.classList.remove('active-pin'));
+          const pinEl = document.querySelector(`.rich-map-pin[data-id="${id}"]`);
+          if (pinEl) {
+             pinEl.classList.add('active-pin');
+             if (leafletMap) {
+               leafletMap.setView([exp.location.lat, exp.location.lng], 15, {animate: true});
+             }
+          }
+        } else {
           if (exp && onSelectExperience) {
             onSelectExperience(exp);
           }
-        });
+        }
       });
-    }
+    });
 
     // Save Button Clicks
     container.querySelectorAll('.save-btn').forEach(btn => {
@@ -263,11 +296,22 @@ export function renderRecommendationFeed(container, constraints, onReplan, onSel
     // Close sheet and deselect pins if clicking map
     leafletMap.on('click', () => {
       document.querySelectorAll('.rich-map-pin').forEach(el => el.classList.remove('active-pin'));
-      hideBottomSheet();
+      if (window.innerWidth < 1024) hideBottomSheet();
     });
   }
 
   function showBottomSheet(exp) {
+    if (window.innerWidth >= 1024) {
+      // On desktop, clicking a pin can just navigate to detail or highlight the list item
+      document.querySelectorAll('.exp-card').forEach(c => c.style.outline = 'none');
+      const card = container.querySelector(`.exp-card[data-id="${exp.id}"]`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.outline = '3px solid var(--color-primary)';
+      }
+      return;
+    }
+    
     const sheet = container.querySelector('#bottomSheet');
     if (!sheet) return;
 

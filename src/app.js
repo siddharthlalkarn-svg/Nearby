@@ -11,16 +11,38 @@ const appContainer = document.getElementById('app');
 let globalConstraints = null;
 
 function startApp() {
+  setupNavigation();
   showOnboarding();
 }
 
+function updateNavState(activeId) {
+  document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+  if (activeId) {
+    document.querySelectorAll(activeId).forEach(el => el.classList.add('active'));
+  }
+}
+
+function setupNavigation() {
+  // Desktop Nav
+  document.getElementById('navHome').addEventListener('click', () => showOnboarding());
+  document.getElementById('navExplore').addEventListener('click', () => showFeed(globalConstraints || { interests: [], budget: 5000, availableMinutes: 240, groupType: 'solo' }));
+  document.getElementById('navProvider').addEventListener('click', () => showProviderDashboard());
+  document.getElementById('footerProviderLink').addEventListener('click', (e) => { e.preventDefault(); showProviderDashboard(); });
+
+  // Mobile Nav
+  document.getElementById('mobNavExplore').addEventListener('click', () => showFeed(globalConstraints || { interests: [], budget: 5000, availableMinutes: 240, groupType: 'solo' }));
+  document.getElementById('mobNavProvider').addEventListener('click', () => showProviderDashboard());
+  
+  // Expose global hook for internal links
+  window.onGoToProvider = () => showProviderDashboard();
+}
+
 function showOnboarding() {
+  updateNavState(null); // home isn't specifically highlighted
   appContainer.innerHTML = '';
   
-  // Attach global callback for the provider link
-  window.onGoToProvider = () => {
-    showProviderDashboard();
-  };
+  // Attach global callback for the provider link (kept for legacy if used in views)
+  window.onGoToProvider = () => showProviderDashboard();
 
   renderOnboarding(appContainer, (constraints) => {
     globalConstraints = constraints;
@@ -29,6 +51,7 @@ function showOnboarding() {
 }
 
 function showFeed(constraints) {
+  updateNavState('#navExplore, #mobNavExplore');
   appContainer.innerHTML = '';
   renderRecommendationFeed(appContainer, constraints, 
     // onReplan callback
@@ -55,6 +78,7 @@ function showDetail(experience) {
 }
 
 function showProviderDashboard() {
+  updateNavState('#navProvider, #mobNavProvider');
   appContainer.innerHTML = '';
   renderProviderDashboard(appContainer, (nextView) => {
     if (nextView === 'ONBOARDING') showOnboarding();

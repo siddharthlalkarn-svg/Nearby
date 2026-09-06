@@ -281,10 +281,64 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 
 /* Onboarding Container */
-.onboarding-screen {
+.onboarding-layout {
+  display: flex;
+  flex-direction: column;
   padding: var(--space-4);
+  max-width: 1240px;
+  margin: 0 auto;
   animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 1024px) {
+  .onboarding-layout {
+    flex-direction: row;
+    gap: 80px;
+    padding: var(--space-6) var(--space-4);
+    align-items: center;
+    min-height: calc(100vh - 120px);
+  }
+}
+
+.onboarding-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.hero-graphic {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: var(--color-surface-inset);
+  border-radius: var(--radius-xl);
+  margin-bottom: 24px;
+}
+@media (min-width: 1024px) {
+  .hero-graphic {
+    height: 400px;
+  }
+}
+.sticker-accent {
+  position: absolute;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  padding: 8px 16px;
+  border-radius: var(--radius-sticker);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 14px;
+  transform: rotate(3deg);
+  box-shadow: var(--shadow-sticker);
+}
+
+.onboarding-form-container {
+  flex: 1;
+  background: var(--color-surface);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-level-2);
+  border: 1px solid rgba(30, 30, 36, 0.05);
   max-width: 600px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -316,6 +370,29 @@ input[type="range"]::-webkit-slider-runnable-track {
   max-width: 1240px;
   margin: 0 auto;
   animation: slideUpFade 0.4s ease-out;
+}
+.feed-screen-map {
+  max-width: 100%;
+  padding: 0;
+  padding-top: 64px;
+}
+@media (min-width: 1024px) {
+  .feed-screen-map {
+    padding-top: 72px;
+  }
+}
+
+.context-banner {
+  margin-bottom: var(--space-5);
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(30, 30, 36, 0.05);
+  background-image: radial-gradient(circle at 100% 100%, rgba(255, 120, 172, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 0% 0%, rgba(168, 213, 227, 0.1) 0%, transparent 40%);
+}
+.context-content {
+  max-width: 800px;
 }
 
 .filter-bar {
@@ -506,14 +583,47 @@ input[type="range"]::-webkit-slider-runnable-track {
   color: var(--color-base); /* Cream */
 }
 
-/* Map Container */
+/* Map Container & Split Pane */
+.split-pane-layout {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px);
+}
+@media (min-width: 1024px) {
+  .split-pane-layout {
+    flex-direction: row;
+    height: calc(100vh - 72px);
+  }
+  .split-pane-list {
+    width: 450px;
+    padding: var(--space-4);
+    overflow-y: auto;
+    border-right: 1px solid rgba(30,30,36,0.08);
+    background: var(--color-base);
+  }
+  .split-pane-map {
+    flex: 1;
+    position: relative;
+  }
+}
+
+.desktop-only { display: none; }
+@media (min-width: 1024px) { .desktop-only { display: block; } }
+
+.mobile-only { display: block; }
+@media (min-width: 1024px) { .mobile-only { display: none !important; } }
+
 .map-container {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: 100%;
   position: relative;
-  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-level-1);
+  z-index: 1;
+}
+@media (max-width: 1023px) {
+  .map-container {
+    height: calc(100vh - 140px);
+  }
 }
 
 /* Map Pin */
@@ -598,6 +708,86 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
+@media (min-width: 1024px) {
+  .detail-screen {
+    max-width: 100%;
+    padding-bottom: 80px;
+  }
+  .detail-hero {
+    height: 480px;
+    max-width: 1240px;
+    margin: 0 auto;
+    margin-top: 24px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .detail-hero img {
+    border-radius: var(--radius-xl);
+  }
+}
+
+.detail-layout {
+  display: flex;
+  flex-direction: column;
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .detail-layout {
+    flex-direction: row;
+    gap: 64px;
+    padding: var(--space-5) var(--space-4);
+  }
+  .detail-main-content {
+    flex: 2;
+    max-width: 760px;
+  }
+  .detail-sidebar {
+    flex: 1;
+    max-width: 380px;
+    position: relative;
+  }
+}
+
+.host-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(30, 30, 36, 0.08);
+  border-bottom: 1px solid rgba(30, 30, 36, 0.08);
+  margin-bottom: 24px;
+}
+.host-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--color-text); color: var(--color-base);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700;
+}
+.host-info h4 { font-size: 18px; margin-bottom: 4px; }
+.host-info p { color: var(--color-text-light); font-size: 14px; }
+
+.booking-card {
+  position: sticky;
+  top: 100px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-level-2);
+  border: 1px solid rgba(30, 30, 36, 0.08);
+}
+@media (max-width: 1023px) {
+  .booking-card {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    top: auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 .back-btn {
   position: absolute;
   top: var(--space-4);
@@ -640,6 +830,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   font-size: 15px;
   margin-bottom: var(--space-2);
   font-weight: 600;
+  align-items: center;
 }
 
 .accessibility-tags {
@@ -694,22 +885,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-color: var(--color-text);
 }
 
-.sticky-cta-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--color-surface);
-  padding: var(--space-4);
-  box-shadow: var(--shadow-level-2);
-  display: flex;
-  gap: var(--space-3);
-  z-index: 100;
-  max-width: 600px;
-  margin: 0 auto;
-  border-top: 1px solid rgba(30, 30, 36, 0.06);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-}
+/* Removed .sticky-cta-bar as it's replaced by booking-card */
 
 /* Provider Form */
 .form-input {
